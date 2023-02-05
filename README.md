@@ -1,22 +1,7 @@
-# discord.js-typescript-template
+# WakaTime Discord Bot
 
-A discord.js bot template using TypeScript.
-
-## ⚙️ Usage
-
-1. Clone the repository
-2. Install dependencies with `npm install`
-3. Create a `.env` from `.env.example` and fill in the values
-4. Run the bot with one of the following commands:
-    - `npm run start` - Runs the bot (without compiling)
-    - `npm run start:dev` - Runs the bot in development mode (with hot-reloading)
-    - `npm run start:prod` - Runs the bot in production mode (compiles into `dist` folder)
-    - `npm run build` - Compiles the code
-    - `npm run watch` - Recompiles the code on file changes
-
-## 📖 Credits
-
-This project was inspired by [reconlx](https://github.com/reconlx) and is based on his [djs-typescript-handler](https://github.com/reconlx/djs-typescript-handler) repository.
+A Discord bot that interacts with the WakaTime api for showing coding stats to users in a discord server.
+Feel free to contribute to this project.
 
 ## 📝 License
 
