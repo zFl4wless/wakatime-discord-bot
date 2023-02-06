@@ -11,19 +11,20 @@ const authorizeOptions = {
 const authorizeUrl = `https://wakatime.com/oauth/authorize?${new URLSearchParams(authorizeOptions)}`;
 
 /**
- * This login command is used to authenticate the user through the official WakaTime website.
+ * This command is used to authenticate the user through the official WakaTime website.
  */
 export default new Command({
-    name: 'login',
-    description: 'Login to your WakaTime account by authenticating through the official WakaTime website.',
+    name: 'authenticate',
+    description: 'Authenticating this app through the official WakaTime website.',
     run: async ({ interaction }) => {
         const buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Login').setURL(authorizeUrl),
         );
 
-        await interaction.editReply({
+        await interaction.reply({
             content: 'You can authenticate here.',
             components: [buttons as any],
+            ephemeral: true,
         });
     },
 });
