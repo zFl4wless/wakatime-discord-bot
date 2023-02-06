@@ -1,9 +1,21 @@
 declare global {
     namespace NodeJS {
         interface ProcessEnv {
-            botToken: string;
-            guildId: string;
-            environment: 'dev' | 'prod' | 'test';
+            // Bot
+            BOT_TOKEN: string;
+            GUILD_ID: string;
+            ENVIRONMENT: 'dev' | 'prod' | 'test';
+
+            // API
+            API_URL: string;
+            API_PORT: number;
+
+            // Database
+            DATEBASE_URL: string;
+
+            // WakaTime Client Credentials
+            CLIENT_ID: string;
+            CLIENT_SECRET: string;
         }
     }
 }
