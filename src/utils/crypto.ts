@@ -16,15 +16,17 @@ import fs from 'fs';
  * @returns {sodium.KeyPair} The generated key pair.
  */
 export function generateKeyPair(): sodium.KeyPair {
+    const currentSalt = getSalt();
+
     let salt: Uint8Array;
-    if (getSalt()) {
+    if (currentSalt && currentSalt.length > 0) {
         salt = sodium.from_base64(getSalt());
     } else {
         salt = sodium.randombytes_buf(sodium.crypto_pwhash_SALTBYTES);
         saveSalt(sodium.to_base64(salt));
     }
 
-    let hash = sodium.crypto_pwhash(
+    const hash = sodium.crypto_pwhash(
         sodium.crypto_secretbox_KEYBYTES,
         process.env.CRYPTO_PASSWORD,
         salt,
@@ -33,9 +35,7 @@ export function generateKeyPair(): sodium.KeyPair {
         sodium.crypto_pwhash_ALG_ARGON2ID13,
     );
 
-    let key = sodium.crypto_box_seed_keypair(hash);
-
-    return key;
+    return sodium.crypto_box_seed_keypair(hash);
 }
 
 /**
@@ -46,8 +46,8 @@ export function generateKeyPair(): sodium.KeyPair {
  * @returns {nonce: string, chipertext: string} The encrypted data.
  */
 export function encrypt(data: string, keys: sodium.KeyPair): { nonce: string; chipertext: string } {
-    let nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
-    let chipertext = sodium.crypto_box_easy(data, nonce, keys.publicKey, keys.privateKey);
+    const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
+    const chipertext = sodium.crypto_box_easy(data, nonce, keys.publicKey, keys.privateKey);
 
     return {
         nonce: sodium.to_base64(nonce),
@@ -64,10 +64,10 @@ export function encrypt(data: string, keys: sodium.KeyPair): { nonce: string; ch
  * @returns {string} The decrypted data.
  */
 export function decrypt(data: string, nonce: string, keys: sodium.KeyPair): string {
-    let rawNonce = sodium.from_base64(nonce);
-    let rawData = sodium.from_base64(data);
+    const rawNonce = sodium.from_base64(nonce);
+    const rawData = sodium.from_base64(data);
 
-    let plaintext = sodium.crypto_box_open_easy(rawData, rawNonce, keys.publicKey, keys.privateKey);
+    const plaintext = sodium.crypto_box_open_easy(rawData, rawNonce, keys.publicKey, keys.privateKey);
 
     return sodium.to_string(plaintext);
 }
@@ -86,17 +86,15 @@ export function formatNonceAndChipertext(nonce: string, chipertext: string): str
 /**
  * Gets the salt from the salt.txt file.
  *
- * @returns {string | null} The salt.
+ * @returns {string} The salt.
  */
-function getSalt(): string | null {
-    fs.readFile('../../salt.txt', (error, data) => {
-        if (error) {
-            return null;
-        }
-        return data;
-    });
-
-    return null;
+function getSalt(): string {
+    return fs
+        .readFileSync('./salt.txt', {
+            encoding: 'utf-8',
+            flag: 'r',
+        })
+        .toString();
 }
 
 /**
@@ -105,9 +103,5 @@ function getSalt(): string | null {
  * @param salt The salt to save.
  */
 function saveSalt(salt: string): void {
-    fs.writeFile('../../salt.txt', salt, (error) => {
-        if (error) {
-            throw error;
-        }
-    });
+    fs.writeFileSync('./salt.txt', salt);
 }
