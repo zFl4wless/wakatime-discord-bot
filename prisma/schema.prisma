@@ -8,7 +8,8 @@ datasource db {
 }
 
 model User {
-  id      Int    @id @default(autoincrement())
-  user_id BigInt @unique
-  api_key String
+  id           Int    @id @default(autoincrement())
+  userId       String @unique
+  accessToken  String
+  refreshToken String
 }
