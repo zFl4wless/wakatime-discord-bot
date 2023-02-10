@@ -16,6 +16,9 @@ declare global {
             // WakaTime Client Credentials
             CLIENT_ID: string;
             CLIENT_SECRET: string;
+
+            // Crypto
+            CRYPTO_PASSWORD: string;
         }
     }
 }

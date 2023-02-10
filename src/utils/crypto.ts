@@ -4,7 +4,7 @@ import fs from 'fs';
 /**
  * This utility is used to encrypt and decrypt data using libsodium-wrappers.
  * Credits to DreamTexX for the code :)
- * 
+ *
  * Info: You need to create a salt.txt file in the root directory of the project.
  *
  * @returns {sodium.KeyPair} The generated key pair.
@@ -63,13 +63,24 @@ export function encrypt(data: string, keys: sodium.KeyPair): { nonce: string; ch
  * @param keys The key pair to use for decryption.
  * @returns {string} The decrypted data.
  */
-export function decrypt(data: string, nonce: string, keys: sodium.KeyPair) {
+export function decrypt(data: string, nonce: string, keys: sodium.KeyPair): string {
     let rawNonce = sodium.from_base64(nonce);
     let rawData = sodium.from_base64(data);
 
     let plaintext = sodium.crypto_box_open_easy(rawData, rawNonce, keys.publicKey, keys.privateKey);
 
     return sodium.to_string(plaintext);
+}
+
+/**
+ * Formats the nonce and chipertext into a string.
+ *
+ * @param nonce The nonce.
+ * @param chipertext The chipertext.
+ * @returns {string} The formatted string.
+ */
+export function formatNonceAndChipertext(nonce: string, chipertext: string): string {
+    return `${nonce}$${chipertext}`;
 }
 
 /**
