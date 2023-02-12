@@ -44,11 +44,11 @@ app.get('/redirect', async (req, res) => {
             keys,
         );
 
-        await saveUser(
-            userId,
-            formatNonceAndChipertext(accessTokenNonce, accessTokenChipertext),
-            formatNonceAndChipertext(refreshTokenNonce, refreshTokenChipertext),
-        );
+        await saveUser({
+            userId: userId,
+            accessToken: formatNonceAndChipertext(accessTokenNonce, accessTokenChipertext),
+            refreshToken: formatNonceAndChipertext(refreshTokenNonce, refreshTokenChipertext),
+        });
 
         res.send('Success! You can close this window now.');
     } catch (error) {
