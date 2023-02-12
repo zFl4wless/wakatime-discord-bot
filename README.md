@@ -1,3 +1,5 @@
+**⚠ This repository is under development and is not ready for production use! ⚠**
+
 # WakaTime Discord Bot
 
 A Discord bot that interacts with the WakaTime api for showing coding stats to users in a discord server.
