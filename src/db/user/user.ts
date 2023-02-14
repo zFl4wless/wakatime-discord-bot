@@ -7,7 +7,7 @@ import { UserDto } from './user.dto';
  * @param UserDto The user to save.
  */
 export async function saveUser({ userId, accessToken, refreshToken }: UserDto) {
-    prismaClient.user.create({
+    await prismaClient.user.create({
         data: {
             userId: userId,
             accessToken: accessToken,
@@ -30,4 +30,20 @@ export async function isUser(userId: string) {
     });
 
     return user !== null;
+}
+
+/**
+ * Gets a user by their id.
+ *
+ * @param userId The user's id.
+ * @returns The user.
+ */
+export async function getUserById(userId: string) {
+    const user = await prismaClient.user.findUnique({
+        where: {
+            userId: userId,
+        },
+    });
+
+    return user;
 }
