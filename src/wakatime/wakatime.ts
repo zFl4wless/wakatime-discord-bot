@@ -2,7 +2,9 @@ import axios, { AxiosResponse } from 'axios';
 import { getUserById } from '../db/user/user';
 import { keys } from '..';
 import { decrypt } from '../utils/crypto';
-import { errorEmbed } from '../utils/embeds';
+import { errorEmbed, loadingEmbed } from '../utils/embeds';
+import { EmbedBuilder } from 'discord.js';
+import { ExtendedInteraction } from '../types/Command';
 
 // The base URL for the WakaTime API
 const BASE_URL = 'https://wakatime.com/api/v1';
@@ -17,7 +19,18 @@ const BASE_URL = 'https://wakatime.com/api/v1';
  * @param data The data to send with the request.
  * @returns The response from the API.
  */
-export async function request(method: string, endpoint: string, userId: string, interaction: any, data?: any) {
+export async function request(
+    method: string,
+    endpoint: string,
+    userId: string,
+    interaction: ExtendedInteraction,
+    data?: any,
+) {
+    await interaction.reply({
+        embeds: [loadingEmbed()],
+        ephemeral: true,
+    });
+
     const accessToken = await getAccessToken(userId);
 
     let response: AxiosResponse | null;
@@ -29,9 +42,10 @@ export async function request(method: string, endpoint: string, userId: string, 
             },
         });
     } catch (error) {
-        await interaction.reply({
+        console.log(error.response);
+
+        await interaction.editReply({
             embeds: [errorEmbed(error.response.status.toString(), error.response.data.errors.join('\n'))],
-            ephemeral: true,
         });
         return null;
     }
@@ -49,4 +63,33 @@ async function getAccessToken(userId: string) {
     const [nonce, chipertext] = user.accessToken.split('$');
 
     return decrypt(chipertext, nonce, keys);
+}
+
+/**
+ * Creates an embed from the data returned from the WakaTime API.
+ *
+ * @param title The title of the embed.
+ * @param description The description of the embed.
+ * @param data The data to put in the embed.
+ * @returns The created embed.
+ */
+export function getEmbedFromData(title: string, description: string, data: any) {
+    const embed = new EmbedBuilder();
+    embed.setTitle(title);
+    embed.setDescription(`*${description}*`);
+    embed.setColor('#FFFFFF');
+    embed.addFields(
+        Object.keys(data).map((key) => {
+            const value =
+                data[key].toString().length > 1024 ? data[key].toString().slice(0, 1021) + '...' : data[key].toString();
+
+            return {
+                name: key,
+                value: `\`\`\`${value}\`\`\``,
+                inline: true,
+            };
+        }),
+    );
+
+    return embed;
 }
