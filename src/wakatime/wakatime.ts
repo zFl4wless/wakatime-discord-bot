@@ -3,7 +3,6 @@ import { getUserById } from '../db/user/user';
 import { keys } from '..';
 import { decrypt } from '../utils/crypto';
 import { defaultEmbed, errorEmbed, loadingEmbed } from '../utils/embeds';
-import { EmbedBuilder } from 'discord.js';
 import { ExtendedInteraction } from '../types/Command';
 
 const BASE_URL = 'https://wakatime.com/api/v1';
@@ -22,12 +21,13 @@ type Request = {
     title: string;
     description: string;
     endpoint: string;
+    params?: Record<string, any>;
     userId: string;
     interaction: ExtendedInteraction;
     formatResponse: (response: any) => any;
 };
 export default async function request<T>(requestOptions: Request): Promise<void> {
-    const { title, description, endpoint, userId, interaction, formatResponse } = requestOptions;
+    const { title, description, endpoint, params, userId, interaction, formatResponse } = requestOptions;
     await interaction.reply({
         embeds: [loadingEmbed()],
         ephemeral: true,
@@ -40,12 +40,15 @@ export default async function request<T>(requestOptions: Request): Promise<void>
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
+            params: params,
         });
 
         await interaction.editReply({
             embeds: [getEmbedFromData(title, description, formatResponse(response?.data.data as T))],
         });
     } catch (error) {
+        console.log(error.response.data);
+
         await interaction.editReply({
             embeds: [errorEmbed(error.response.status.toString(), error.response.data.errors.join('\n'))],
         });
