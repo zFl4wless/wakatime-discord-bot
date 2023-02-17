@@ -3,6 +3,7 @@ import { Command } from '../../structure/Command';
 import { ButtonStyle } from 'discord.js';
 import sodium from 'libsodium-wrappers';
 import { userStates } from '../../api';
+import { defaultEmbed } from '../../utils/embeds';
 
 /**
  * This command is used to authenticate the user through the official WakaTime website.
@@ -22,6 +23,10 @@ export default new Command({
             state: state,
         };
 
+        const embed = defaultEmbed()
+            .setTitle('Authorize')
+            .setDescription('Click the button below to authorize this app through the official WakaTime website.');
+
         const buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setStyle(ButtonStyle.Link)
@@ -30,7 +35,7 @@ export default new Command({
         );
 
         await interaction.reply({
-            content: 'You can authenticate here.',
+            embeds: [embed],
             components: [buttons as any],
             ephemeral: true,
         });

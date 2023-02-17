@@ -24,6 +24,7 @@
   "dependencies": {
     "@prisma/client": "^4.10.0",
     "axios": "^1.3.2",
+    "color-util-nodejs": "^1.0.2",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",

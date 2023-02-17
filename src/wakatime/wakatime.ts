@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getUserById } from '../db/user/user';
 import { keys } from '..';
 import { decrypt } from '../utils/crypto';
-import { errorEmbed, loadingEmbed } from '../utils/embeds';
+import { defaultEmbed, errorEmbed, loadingEmbed } from '../utils/embeds';
 import { EmbedBuilder } from 'discord.js';
 import { ExtendedInteraction } from '../types/Command';
 
@@ -75,22 +75,18 @@ async function getAccessToken(userId: string): Promise<string | null> {
  * @param data The data to put in the embed.
  * @returns The created embed.
  */
-function getEmbedFromData(title: string, description: string, data: any) {
-    const embed = new EmbedBuilder();
-    embed.setTitle(title);
-    embed.setDescription(`*${description}*`);
-    embed.setColor('#FFFFFF');
-    embed.addFields(
-        Object.keys(data).map((key) => {
-            const value = data[key];
+const getEmbedFromData = (title: string, description: string, data: any) =>
+    defaultEmbed()
+        .setTitle(title)
+        .setDescription(`*${description}*`)
+        .addFields(
+            Object.keys(data).map((key) => {
+                const value = data[key];
 
-            return {
-                name: key,
-                value: `\`\`\`${value}\`\`\``,
-                inline: true,
-            };
-        }),
-    );
-
-    return embed;
-}
+                return {
+                    name: key,
+                    value: `\`\`\`${value}\`\`\``,
+                    inline: true,
+                };
+            }),
+        );
