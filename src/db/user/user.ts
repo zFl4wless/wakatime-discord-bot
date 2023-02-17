@@ -17,6 +17,23 @@ export async function saveUser({ userId, accessToken, refreshToken }: UserDto) {
 }
 
 /**
+ * Updates a user's access and refresh tokens.
+ * 
+ * @param UserDto The user to update.
+ */
+export async function updateUser({ userId, accessToken, refreshToken }: UserDto) {
+    await prismaClient.user.update({
+        where: {
+            userId: userId,
+        },
+        data: {
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+        },
+    });
+}
+
+/**
  * Checks if a user with the given id exists.
  *
  * @param userId The user id to check.

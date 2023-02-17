@@ -3,7 +3,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { encrypt, formatNonceAndChipertext } from '../utils/crypto';
 import { keys } from '..';
-import { isUser, saveUser } from '../db/user/user';
+import { isUser, saveUser, updateUser } from '../db/user/user';
 
 export const userStates = new Map<string, string>();
 
@@ -31,12 +31,6 @@ app.get('/redirect', async (req, res) => {
             return;
         }
 
-        const userExists = await isUser(userId);
-        if (userExists) {
-            res.send('You are already authenticated.');
-            return;
-        }
-
         const { access_token, refresh_token } = qs.parse(response.data);
         const { nonce: accessTokenNonce, chipertext: accessTokenChipertext } = encrypt(access_token.toString(), keys);
         const { nonce: refreshTokenNonce, chipertext: refreshTokenChipertext } = encrypt(
@@ -44,11 +38,20 @@ app.get('/redirect', async (req, res) => {
             keys,
         );
 
-        await saveUser({
-            userId: userId,
-            accessToken: formatNonceAndChipertext(accessTokenNonce, accessTokenChipertext),
-            refreshToken: formatNonceAndChipertext(refreshTokenNonce, refreshTokenChipertext),
-        });
+        const userExists = await isUser(userId);
+        if (userExists) {
+            await updateUser({
+                userId: userId,
+                accessToken: formatNonceAndChipertext(accessTokenNonce, accessTokenChipertext),
+                refreshToken: formatNonceAndChipertext(refreshTokenNonce, refreshTokenChipertext),
+            });
+        } else {
+            await saveUser({
+                userId: userId,
+                accessToken: formatNonceAndChipertext(accessTokenNonce, accessTokenChipertext),
+                refreshToken: formatNonceAndChipertext(refreshTokenNonce, refreshTokenChipertext),
+            });
+        }
 
         res.send('Success! You can close this window now.');
     } catch (error) {
