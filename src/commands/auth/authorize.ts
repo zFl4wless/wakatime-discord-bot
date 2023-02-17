@@ -1,15 +1,15 @@
 import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
-import { Command } from '../structure/Command';
+import { Command } from '../../structure/Command';
 import { ButtonStyle } from 'discord.js';
 import sodium from 'libsodium-wrappers';
-import { userStates } from '../api';
+import { userStates } from '../../api';
 
 /**
  * This command is used to authenticate the user through the official WakaTime website.
  */
 export default new Command({
-    name: 'authenticate',
-    description: 'Authenticating this app through the official WakaTime website.',
+    name: 'authorize',
+    description: 'Authorize this app through the official WakaTime website.',
     run: async ({ interaction }) => {
         const state = sodium.randombytes_buf(32, 'hex');
         userStates.set(state, interaction.user.id);

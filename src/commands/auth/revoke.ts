@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { Command } from '../structure/Command';
+import { Command } from '../../structure/Command';
 
 /**
  * This command is used to inform the user about how to revoke the authorization.
