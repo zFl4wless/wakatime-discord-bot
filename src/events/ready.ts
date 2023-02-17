@@ -1,3 +1,4 @@
+import { logger } from '..';
 import { prismaClient } from '../db/prisma';
 import { Event } from '../structure/Event';
 
@@ -7,5 +8,5 @@ import { Event } from '../structure/Event';
 export default new Event('ready', () => {
     prismaClient.$connect();
 
-    console.log('Ready!');
+    logger.info('Bot is ready!');
 });

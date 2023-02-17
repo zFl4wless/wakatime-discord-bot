@@ -3,8 +3,11 @@ import dotenv from 'dotenv';
 import sodium from 'libsodium-wrappers';
 import { ExtendedClient } from './structure/Client';
 import { generateKeyPair } from './utils/crypto';
+import { Logger } from 'tslog';
 
 dotenv.config();
+
+export const logger = new Logger();
 
 export const client = new ExtendedClient();
 client.start();

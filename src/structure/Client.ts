@@ -3,6 +3,7 @@ import { CommandType } from '../types/Command';
 import glob from 'glob';
 import { promisify } from 'util';
 import { RegisterCommandsOptions } from '../types/Client';
+import { logger } from '..';
 
 const globPromise = promisify(glob);
 
@@ -46,10 +47,10 @@ export class ExtendedClient extends Client {
     async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
         if (guildId) {
             this.guilds.cache.get(guildId)?.commands.set(commands);
-            console.log(`Registering commands to ${guildId}`);
+            logger.info(`Registering commands to ${guildId}`);
         } else {
             this.application?.commands.set(commands);
-            console.log(`Registering commands to global`);
+            logger.info(`Registering commands to global`);
         }
     }
 
@@ -63,7 +64,7 @@ export class ExtendedClient extends Client {
         commandFiles.map(async (filePath) => {
             const command: CommandType = await this.importFile(filePath);
             if (!command.name) return;
-            console.log(command);
+            logger.info(`Registering command ${command.name}...`);
 
             this.commands.set(command.name, command);
             slashCommands.push(command);
@@ -77,7 +78,7 @@ export class ExtendedClient extends Client {
         const eventFiles = await globPromise(`${__dirname}/../events/*{.ts,.js}`);
         eventFiles.map(async (filePath) => {
             const event = await this.importFile(filePath);
-            console.log(event);
+            logger.info(`Registering event ${event.name}...`);
 
             this.on(event.name, event.run);
         });
