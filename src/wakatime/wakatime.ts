@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { getUserById } from '../db/user/user';
 import { keys } from '..';
 import { decrypt } from '../utils/crypto';
@@ -6,40 +6,44 @@ import { errorEmbed, loadingEmbed } from '../utils/embeds';
 import { EmbedBuilder } from 'discord.js';
 import { ExtendedInteraction } from '../types/Command';
 
-// The base URL for the WakaTime API
 const BASE_URL = 'https://wakatime.com/api/v1';
 
 /**
- * Makes a request to the WakaTime API.
- *
- * @param method The HTTP method to use.
- * @param endpoint The endpoint to use.
- * @param userId The ID of the user to make the request for.
- * @param interaction The interaction to send feedback to.
- * @param data The data to send with the request.
- * @returns The response from the API.
+ * Gets data from the WakaTime API and sends it to the user.
+ * 
+ * @param title The title of the embed.
+ * @param description The description of the embed.
+ * @param endpoint The endpoint to call.
+ * @param userId The ID of the user that called the command.
+ * @param interaction The interaction to reply to.
+ * @param formatResponse The function to format the response.
  */
-export async function request(
-    method: string,
-    endpoint: string,
-    userId: string,
-    interaction: ExtendedInteraction,
-    data?: any,
-) {
+type Request = {
+    title: string;
+    description: string;
+    endpoint: string;
+    userId: string;
+    interaction: ExtendedInteraction;
+    formatResponse: (response: any) => any;
+};
+export default async function request<T>(requestOptions: Request): Promise<void> {
+    const { title, description, endpoint, userId, interaction, formatResponse } = requestOptions;
     await interaction.reply({
         embeds: [loadingEmbed()],
         ephemeral: true,
     });
 
-    const accessToken = await getAccessToken(userId);
-
-    let response: AxiosResponse | null;
     try {
-        response = await axios(`${BASE_URL}/${endpoint}`, {
-            method: method,
+        const accessToken = await getAccessToken(userId);
+        const response = await axios(`${BASE_URL}/${endpoint}`, {
+            method: 'GET',
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
+        });
+
+        await interaction.editReply({
+            embeds: [getEmbedFromData(title, description, formatResponse(response?.data.data as T))],
         });
     } catch (error) {
         console.log(error.response);
@@ -47,9 +51,7 @@ export async function request(
         await interaction.editReply({
             embeds: [errorEmbed(error.response.status.toString(), error.response.data.errors.join('\n'))],
         });
-        return null;
     }
-    return response;
 }
 
 /**
@@ -73,15 +75,14 @@ async function getAccessToken(userId: string) {
  * @param data The data to put in the embed.
  * @returns The created embed.
  */
-export function getEmbedFromData(title: string, description: string, data: any) {
+function getEmbedFromData(title: string, description: string, data: any) {
     const embed = new EmbedBuilder();
     embed.setTitle(title);
     embed.setDescription(`*${description}*`);
     embed.setColor('#FFFFFF');
     embed.addFields(
         Object.keys(data).map((key) => {
-            const value =
-                data[key].toString().length > 1024 ? data[key].toString().slice(0, 1021) + '...' : data[key].toString();
+            const value = data[key];
 
             return {
                 name: key,
