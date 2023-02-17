@@ -1,4 +1,5 @@
-import { logger } from '..';
+import { ActivityType } from 'discord.js';
+import { client, logger } from '..';
 import { prismaClient } from '../db/prisma';
 import { Event } from '../structure/Event';
 
@@ -7,6 +8,16 @@ import { Event } from '../structure/Event';
  */
 export default new Event('ready', () => {
     prismaClient.$connect();
+
+    client.user.setPresence({
+        activities: [
+            {
+                name: 'with WakaTime',
+                type: ActivityType.Playing,
+            },
+        ],
+        status: 'online',
+    });
 
     logger.info('Bot is ready!');
 });
