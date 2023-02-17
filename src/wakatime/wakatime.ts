@@ -4,6 +4,7 @@ import { keys } from '..';
 import { decrypt } from '../utils/crypto';
 import { defaultEmbed, errorEmbed, loadingEmbed } from '../utils/embeds';
 import { ExtendedInteraction } from '../types/Command';
+import { HttpResponseCode } from './HttpResponseCode';
 
 const BASE_URL = 'https://wakatime.com/api/v1';
 
@@ -47,10 +48,16 @@ export default async function request<T>(requestOptions: Request): Promise<void>
             embeds: [getEmbedFromData(title, description, formatResponse(response?.data.data as T))],
         });
     } catch (error) {
-        console.log(error.response.data);
+        if (error.response && error.response.status in HttpResponseCode) {
+            const { code, status, message } = HttpResponseCode[error.response.status];
+            await interaction.editReply({
+                embeds: [errorEmbed(`${code} ${status}`, message)],
+            });
+            return;
+        }
 
         await interaction.editReply({
-            embeds: [errorEmbed(error.response.status.toString(), error.response.data.errors.join('\n'))],
+            embeds: [errorEmbed('Unkown Error', 'Please contact the developer. (See `/help`)')],
         });
     }
 }
