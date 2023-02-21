@@ -19,7 +19,7 @@ export default new Command({
             client_id: process.env.CLIENT_ID,
             redirect_uri: `${process.env.API_URL}/redirect`,
             response_type: 'code',
-            scope: 'read_logged_time,read_stats',
+            scope: 'email,read_logged_time,read_stats',
             state: state,
         };
 
