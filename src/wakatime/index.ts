@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { getUserById } from '../db/user/user';
+import { getUserById } from '../db/user/user.model';
 import { keys } from '..';
 import { decrypt } from '../utils/crypto';
 import { defaultEmbed, errorEmbed, loadingEmbed } from '../utils/embeds';
-import { ExtendedInteraction } from '../types/Command';
-import { HttpResponseCode } from './HttpResponseCode';
+import { HttpResponseCode } from './http-response-code';
+import { ExtendedInteraction } from '../types/core/Command';
 
 const BASE_URL = 'https://wakatime.com/api/v1';
 
@@ -21,6 +21,7 @@ const BASE_URL = 'https://wakatime.com/api/v1';
 type Request = {
     title: string;
     description: string;
+    thumbnailKey?: string;
     endpoint: string;
     params?: Record<string, any>;
     userId: string;
@@ -28,7 +29,7 @@ type Request = {
     formatResponse: (response: any) => any;
 };
 export default async function request<T>(requestOptions: Request): Promise<void> {
-    const { title, description, endpoint, params, userId, interaction, formatResponse } = requestOptions;
+    const { title, description, thumbnailKey, endpoint, params, userId, interaction, formatResponse } = requestOptions;
     await interaction.reply({
         embeds: [loadingEmbed()],
         ephemeral: true,
@@ -43,9 +44,10 @@ export default async function request<T>(requestOptions: Request): Promise<void>
             },
             params: params,
         });
+        const data = response.data.data as T;
 
         await interaction.editReply({
-            embeds: [getEmbedFromData(title, description, formatResponse(response?.data.data as T))],
+            embeds: [getEmbedFromData(title, description, formatResponse(data), data[thumbnailKey])],
         });
     } catch (error) {
         if (error.response && error.response.status in HttpResponseCode) {
@@ -85,10 +87,11 @@ async function getAccessToken(userId: string): Promise<string | null> {
  * @param data The data to put in the embed.
  * @returns The created embed.
  */
-const getEmbedFromData = (title: string, description: string, data: any) =>
+const getEmbedFromData = (title: string, description: string, data: any, thumbnailUrl?: string) =>
     defaultEmbed()
         .setTitle(title)
         .setDescription(`*${description}*`)
+        .setThumbnail(thumbnailUrl)
         .addFields(
             Object.keys(data).map((key) => {
                 const value = data[key];

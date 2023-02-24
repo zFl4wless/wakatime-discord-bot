@@ -1,6 +1,6 @@
 import { Command } from '../structure/Command';
-import { AllTimeSinceTodayResponse } from '../types/wakatime/all-time-since-today';
-import request from '../wakatime/wakatime';
+import { AllTimeSinceTodayResponse } from '../types/wakatime/all-time-since-today.types';
+import request from '../wakatime';
 
 /**
  * This command gets the total time logged since account created.

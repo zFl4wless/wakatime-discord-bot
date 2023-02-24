@@ -3,7 +3,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { encrypt, formatNonceAndChipertext } from '../utils/crypto';
 import { keys } from '..';
-import { isUser, saveUser, updateUser } from '../db/user/user';
+import { isUser, saveUser, updateUser } from '../db/user/user.model';
 
 export const userStates = new Map<string, string>();
 

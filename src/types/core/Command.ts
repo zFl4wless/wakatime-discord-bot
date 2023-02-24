@@ -5,7 +5,7 @@ import {
     GuildMember,
     PermissionResolvable,
 } from 'discord.js';
-import { ExtendedClient } from '../structure/Client';
+import { ExtendedClient } from '../../structure/Client';
 
 /**
  * Extends the CommandInteraction to include the member property.
