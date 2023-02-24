@@ -5,8 +5,6 @@ import fs from 'fs';
  * This utility is used to encrypt and decrypt data using libsodium-wrappers.
  * Credits to DreamTexX for the code :)
  *
- * Info: You need to create a salt.txt file in the root directory of the project.
- *
  * @returns {sodium.KeyPair} The generated key pair.
  */
 
@@ -89,12 +87,16 @@ export function formatNonceAndChipertext(nonce: string, chipertext: string): str
  * @returns {string} The salt.
  */
 function getSalt(): string {
-    return fs
-        .readFileSync('./salt.txt', {
-            encoding: 'utf-8',
-            flag: 'r',
-        })
-        .toString();
+    try {
+        return fs
+            .readFileSync('./salt.txt', {
+                encoding: 'utf-8',
+                flag: 'r',
+            })
+            .toString();
+    } catch (error) {
+        fs.writeFileSync('./salt.txt', '');
+    }
 }
 
 /**
