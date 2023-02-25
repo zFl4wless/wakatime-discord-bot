@@ -1,9 +1,9 @@
 import { ApplicationCommandDataResolvable, Client, Collection } from 'discord.js';
-import { CommandType } from '../types/Command';
 import glob from 'glob';
 import { promisify } from 'util';
 import { RegisterCommandsOptions } from '../types/core/Client';
 import { logger } from '..';
+import { CommandType } from '../types/core/Command';
 
 const globPromise = promisify(glob);
 

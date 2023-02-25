@@ -1,7 +1,7 @@
 import { CommandInteractionOptionResolver } from 'discord.js';
 import { client } from '..';
 import { Event } from '../structure/Event';
-import { ExtendedInteraction } from '../types/Command';
+import { ExtendedInteraction } from '../types/core/Command';
 
 /**
  * This event is emitted when a command is used.
