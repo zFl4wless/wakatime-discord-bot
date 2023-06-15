@@ -4,6 +4,7 @@ import { promisify } from 'util';
 import { RegisterCommandsOptions } from '../types/core/Client';
 import { logger } from '..';
 import { CommandType } from '../types/core/Command';
+import path from 'path';
 
 const globPromise = promisify(glob);
 
@@ -46,10 +47,10 @@ export class ExtendedClient extends Client {
      */
     async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
         if (guildId) {
-            this.guilds.cache.get(guildId)?.commands.set(commands);
+            await this.guilds.cache.get(guildId)?.commands.set(commands);
             logger.info(`Registering commands to ${guildId}`);
         } else {
-            this.application?.commands.set(commands);
+            await this.application?.commands.set(commands);
             logger.info(`Registering commands to global`);
         }
     }
@@ -60,9 +61,9 @@ export class ExtendedClient extends Client {
     async registerModules() {
         // Commands
         const slashCommands: ApplicationCommandDataResolvable[] = [];
-        const commandFiles = await globPromise(`${__dirname}/../commands/**/*{.ts,.js}`);
+        const commandFiles = await globPromise('src/commands/**/*{.ts,.js}');
         commandFiles.map(async (filePath) => {
-            const command: CommandType = await this.importFile(filePath);
+            const command: CommandType = await this.importFile(path.join(__dirname, '..', '..', filePath));
             if (!command.name) return;
             logger.info(`Registering command ${command.name}...`);
 
@@ -75,9 +76,9 @@ export class ExtendedClient extends Client {
         });
 
         // Events
-        const eventFiles = await globPromise(`${__dirname}/../events/*{.ts,.js}`);
+        const eventFiles = await globPromise('src/events/**/*{.ts,.js}');
         eventFiles.map(async (filePath) => {
-            const event = await this.importFile(filePath);
+            const event = await this.importFile(path.join(__dirname, '..', '..', filePath));
             logger.info(`Registering event ${event.name}...`);
 
             this.on(event.name, event.run);
