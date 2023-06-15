@@ -1,4 +1,3 @@
-import { EmbedBuilder } from 'discord.js';
 import { Command } from '../../structure/Command';
 import { defaultEmbed } from '../../utils/embeds';
 
