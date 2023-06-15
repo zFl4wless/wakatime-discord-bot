@@ -1,4 +1,3 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { Command } from '../structure/Command';
 import { defaultEmbed } from '../utils/embeds';
 
@@ -17,7 +16,7 @@ export default new Command({
             .addFields([
                 {
                     name: 'Developer',
-                    value: '> The developer of this bot is [**Fl4wless#0745**](https://fl4wless.de).',
+                    value: '> The developer of this bot is [**fl4wless**](https://fl4wless.de).',
                 },
                 {
                     name: 'Source Code',
