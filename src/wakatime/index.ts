@@ -59,7 +59,7 @@ export default async function request<T>(requestOptions: Request): Promise<void>
         }
 
         await interaction.editReply({
-            embeds: [errorEmbed('Unkown Error', 'Please contact the developer. (See `/help`)')],
+            embeds: [errorEmbed('Unknown Error', 'Please contact the developer. (See `/help`)')],
         });
     }
 }
@@ -85,6 +85,7 @@ async function getAccessToken(userId: string): Promise<string | null> {
  * @param title The title of the embed.
  * @param description The description of the embed.
  * @param data The data to put in the embed.
+ * @param thumbnailUrl The URL of the thumbnail.
  * @returns The created embed.
  */
 const getEmbedFromData = (title: string, description: string, data: any, thumbnailUrl?: string) =>

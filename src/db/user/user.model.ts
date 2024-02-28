@@ -56,11 +56,9 @@ export async function isUser(userId: string) {
  * @returns The user.
  */
 export async function getUserById(userId: string) {
-    const user = await prismaClient.user.findUnique({
+    return prismaClient.user.findUnique({
         where: {
             userId: userId,
         },
     });
-
-    return user;
 }
