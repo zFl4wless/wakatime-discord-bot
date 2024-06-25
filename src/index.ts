@@ -1,6 +1,6 @@
 import './api/index';
 import dotenv from 'dotenv';
-import sodium from 'libsodium-wrappers';
+import sodium from 'libsodium-wrappers-sumo';
 import { ExtendedClient } from './structure/Client';
 import { generateKeyPair } from './utils/crypto';
 import { Logger } from 'tslog';

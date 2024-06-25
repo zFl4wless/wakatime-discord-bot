@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
 import { Command } from '../../structure/Command';
 import { ButtonStyle } from 'discord.js';
-import sodium from 'libsodium-wrappers';
+import sodium from 'libsodium-wrappers-sumo';
 import { userStates } from '../../api';
 import { defaultEmbed } from '../../utils/embeds';
 
