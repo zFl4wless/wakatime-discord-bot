@@ -4,7 +4,7 @@ import { UserDto } from './user.dto';
 /**
  * Saves a user to the database.
  *
- * @param UserDto The user to save.
+ * @param UserDto The user to be saved.
  */
 export async function saveUser({ userId, accessToken, refreshToken }: UserDto) {
     await prismaClient.user.create({
@@ -19,7 +19,7 @@ export async function saveUser({ userId, accessToken, refreshToken }: UserDto) {
 /**
  * Updates a user's access and refresh tokens.
  * 
- * @param UserDto The user to update.
+ * @param UserDto The user to be updated.
  */
 export async function updateUser({ userId, accessToken, refreshToken }: UserDto) {
     await prismaClient.user.update({

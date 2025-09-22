@@ -3,7 +3,7 @@ import { AllTimeSinceTodayResponse } from '../types/wakatime/all-time-since-toda
 import request from '../wakatime';
 
 /**
- * This command gets the total time logged since account created.
+ * This command gets the total time logged since the account created.
  *
  * @see https://wakatime.com/developers#all_time_since_today
  */

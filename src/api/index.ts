@@ -1,7 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import qs from 'qs';
-import { encrypt, formatNonceAndChipertext } from '../utils/crypto';
+import { encrypt, formatNonceAndChiperText } from '../utils/crypto';
 import { keys } from '..';
 import { isUser, saveUser, updateUser } from '../db/user/user.model';
 
@@ -32,8 +32,8 @@ app.get('/redirect', async (req, res) => {
         }
 
         const { access_token, refresh_token } = qs.parse(response.data);
-        const { nonce: accessTokenNonce, chipertext: accessTokenChipertext } = encrypt(access_token.toString(), keys);
-        const { nonce: refreshTokenNonce, chipertext: refreshTokenChipertext } = encrypt(
+        const { nonce: accessTokenNonce, chiperText: accessTokenChiperText } = encrypt(access_token.toString(), keys);
+        const { nonce: refreshTokenNonce, chiperText: refreshTokenChiperText } = encrypt(
             refresh_token.toString(),
             keys,
         );
@@ -42,14 +42,14 @@ app.get('/redirect', async (req, res) => {
         if (userExists) {
             await updateUser({
                 userId: userId,
-                accessToken: formatNonceAndChipertext(accessTokenNonce, accessTokenChipertext),
-                refreshToken: formatNonceAndChipertext(refreshTokenNonce, refreshTokenChipertext),
+                accessToken: formatNonceAndChiperText(accessTokenNonce, accessTokenChiperText),
+                refreshToken: formatNonceAndChiperText(refreshTokenNonce, refreshTokenChiperText),
             });
         } else {
             await saveUser({
                 userId: userId,
-                accessToken: formatNonceAndChipertext(accessTokenNonce, accessTokenChipertext),
-                refreshToken: formatNonceAndChipertext(refreshTokenNonce, refreshTokenChipertext),
+                accessToken: formatNonceAndChiperText(accessTokenNonce, accessTokenChiperText),
+                refreshToken: formatNonceAndChiperText(refreshTokenNonce, refreshTokenChiperText),
             });
         }
 

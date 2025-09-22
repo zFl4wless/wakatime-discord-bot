@@ -7,9 +7,11 @@ import { ExtendedInteraction } from '../types/core/Command';
  * This event is emitted when a command is used.
  */
 export default new Event('interactionCreate', async (interaction) => {
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         const command = client.commands.get(interaction.commandName);
-        if (!command) return interaction.followUp('This command does not exist.');
+        if (!command) {
+            return interaction.reply({ content: 'This command does not exist.', ephemeral: true });
+        }
 
         command.run({
             args: interaction.options as CommandInteractionOptionResolver,

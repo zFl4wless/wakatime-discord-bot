@@ -2,7 +2,7 @@ import sodium from 'libsodium-wrappers-sumo';
 import fs from 'fs';
 
 /**
- * This utility is used to encrypt and decrypt data using libsodium-wrappers.
+ * This utility is used to encrypt and decrypt data using lib-sodium-wrappers.
  * Credits to DreamTexX for the code :)
  *
  * @returns {sodium.KeyPair} The generated key pair.
@@ -43,13 +43,13 @@ export function generateKeyPair(): sodium.KeyPair {
  * @param keys The key pair to use for encryption.
  * @returns {nonce: string, chipertext: string} The encrypted data.
  */
-export function encrypt(data: string, keys: sodium.KeyPair): { nonce: string; chipertext: string } {
+export function encrypt(data: string, keys: sodium.KeyPair): { nonce: string; chiperText: string } {
     const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
-    const chipertext = sodium.crypto_box_easy(data, nonce, keys.publicKey, keys.privateKey);
+    const chiperText = sodium.crypto_box_easy(data, nonce, keys.publicKey, keys.privateKey);
 
     return {
         nonce: sodium.to_base64(nonce),
-        chipertext: sodium.to_base64(chipertext),
+        chiperText: sodium.to_base64(chiperText),
     };
 }
 
@@ -71,14 +71,14 @@ export function decrypt(data: string, nonce: string, keys: sodium.KeyPair): stri
 }
 
 /**
- * Formats the nonce and chipertext into a string.
+ * Formats the nonce and chiper text into a string.
  *
  * @param nonce The nonce.
- * @param chipertext The chipertext.
+ * @param chiperText The chiper text.
  * @returns {string} The formatted string.
  */
-export function formatNonceAndChipertext(nonce: string, chipertext: string): string {
-    return `${nonce}$${chipertext}`;
+export function formatNonceAndChiperText(nonce: string, chiperText: string): string {
+    return `${nonce}$${chiperText}`;
 }
 
 /**

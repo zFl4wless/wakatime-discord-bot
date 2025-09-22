@@ -4,6 +4,7 @@ import { ButtonStyle } from 'discord.js';
 import sodium from 'libsodium-wrappers-sumo';
 import { userStates } from '../../api';
 import { defaultEmbed } from '../../utils/embeds';
+import { MessageFlags } from "discord.js";
 
 /**
  * This command is used to authenticate the user through the official WakaTime website.
@@ -37,7 +38,7 @@ export default new Command({
         await interaction.reply({
             embeds: [embed],
             components: [buttons as any],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     },
 });

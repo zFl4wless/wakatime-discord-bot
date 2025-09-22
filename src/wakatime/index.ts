@@ -5,6 +5,7 @@ import { decrypt } from '../utils/crypto';
 import { defaultEmbed, errorEmbed, loadingEmbed } from '../utils/embeds';
 import { HttpResponseCode } from './http-response-code';
 import { ExtendedInteraction } from '../types/core/Command';
+import { MessageFlags } from 'discord.js';
 
 const BASE_URL = 'https://wakatime.com/api/v1';
 
@@ -32,7 +33,7 @@ export default async function request<T>(requestOptions: Request): Promise<void>
     const { title, description, thumbnailKey, endpoint, params, userId, interaction, formatResponse } = requestOptions;
     await interaction.reply({
         embeds: [loadingEmbed()],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
     });
 
     try {
@@ -58,6 +59,8 @@ export default async function request<T>(requestOptions: Request): Promise<void>
             return;
         }
 
+        console.log(error);
+
         await interaction.editReply({
             embeds: [errorEmbed('Unknown Error', 'Please contact the developer. (See `/help`)')],
         });
@@ -74,9 +77,9 @@ async function getAccessToken(userId: string): Promise<string | null> {
     const user = await getUserById(userId);
     if (!user) return null;
 
-    const [nonce, chipertext] = user.accessToken.split('$');
+    const [nonce, chiperText] = user.accessToken.split('$');
 
-    return decrypt(chipertext, nonce, keys);
+    return decrypt(chiperText, nonce, keys);
 }
 
 /**

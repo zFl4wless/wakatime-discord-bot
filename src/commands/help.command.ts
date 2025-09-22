@@ -1,5 +1,6 @@
 import { Command } from '../structure/Command';
 import { defaultEmbed } from '../utils/embeds';
+import { MessageFlags } from 'discord.js';
 
 /**
  * This command gets information about a single user.
@@ -16,7 +17,7 @@ export default new Command({
             .addFields([
                 {
                     name: 'Developer',
-                    value: '> The developer of this bot is [**fl4wless**](https://fl4wless.de).',
+                    value: '> The developer of this bot is **fl4wless**.',
                 },
                 {
                     name: 'Source Code',
@@ -30,7 +31,7 @@ export default new Command({
 
         await interaction.reply({
             embeds: [embed],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     },
 });

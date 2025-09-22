@@ -1,5 +1,6 @@
 import { Command } from '../../structure/Command';
 import { defaultEmbed } from '../../utils/embeds';
+import { MessageFlags } from 'discord.js';
 
 /**
  * This command is used to inform the user about how to revoke the authorization.
@@ -16,7 +17,7 @@ export default new Command({
 
         await interaction.reply({
             embeds: [embed],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     },
 });
