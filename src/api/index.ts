@@ -55,7 +55,9 @@ app.get('/redirect', async (req, res) => {
 
         res.send('Success! You can close this window now.');
     } catch (error) {
+        console.log(error);
         const errorData = qs.parse(error.response.data);
+
         res.send(`Error: ${errorData.error} - ${errorData.error_description}`);
     }
 });
